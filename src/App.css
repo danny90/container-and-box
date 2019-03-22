@@ -1,5 +1,28 @@
 .App {
+  text-align: left;
+}
+
+.form-inline { 
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+.btn {
+  padding: 10px;  
+  border: 2px solid black;
+  border-radius: 5px;
+  margin: 10px;
+  font-size: 15px;
+  font-weight: normal;
   text-align: center;
+  width: 120px;
+  height: auto;
+}
+
+.textbox {
+  margin: 10px;
+  resize: none;
 }
 
 .App-logo {
