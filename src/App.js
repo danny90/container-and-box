@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Container from "./Container";
+import ItemModel from "./ItemModel";
 import "./App.css";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
@@ -8,15 +9,11 @@ import { observer } from "mobx-react";
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { value1: "", value2: "" };
+    this.state = { value: "", jsonStr: "" };
     this.handleChange = this.handleChange.bind(this);
   }
 
-  @observable item = JSON.parse('{"type":"container","items":[{"type":"box","color":"green"}]}');//null;
-  // {
-  //   type: "container",
-  //   items: [{ type: "box", color: "green" }]
-  // };
+  @observable item = new ItemModel({});
 
   render() {
     return (
@@ -43,7 +40,7 @@ class App extends Component {
             className="textbox"
             rows="3"
             cols="80"
-            value={this.state.value2}
+            value={this.state.jsonStr}
             readOnly
           />
         </div>
@@ -52,16 +49,39 @@ class App extends Component {
   }
 
   handleChange(event) {
-    this.setState({ value1: event.target.value });
+    this.setState({ value: event.target.value });
   }
 
   buildFromString = () => {
-    this.item = JSON.parse(JSON.stringify(this.state.value1));
-    console.log(this.item);
+    var obj = JSON.parse(
+      this.state.value.substr(1, this.state.value.length - 2)
+    );
+    this.item.type = obj.type;
+    this.item.color = obj.color;
+    this.item.items = obj.items ? obj.items : [];
   };
 
   createJSON = () => {
-    this.setState({ value2: JSON.stringify(this.item) });
+    this.setState({ jsonStr: '"' + JSON.stringify(this.item) + '"' });
+  };
+
+  addContainer = () => {
+    this.item.items.push({ type: "container", items: [] });
+  };
+
+  addBox = () => {
+    this.item.items.push({
+      type: "box",
+      color: this.defaultBoxColor
+    });
+  };
+
+  changeColor = () => {
+    this.item.color =
+      "#" +
+      Math.random()
+        .toString(16)
+        .slice(2, 8);
   };
 }
 

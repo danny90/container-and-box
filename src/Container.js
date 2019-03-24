@@ -4,26 +4,15 @@ import { observer } from "mobx-react";
 import "./Container.css";
 import ItemModel from "./ItemModel";
 
-const defaultBoxColor = "orange";
+export const defaultBoxColor = "orange";
 
 @observer
 class Container extends React.Component {
-  item = this.props.item
-    ? this.props.item
-    : new ItemModel({ type: "container", items: [] });
-  /* : new ItemModel({
-        type: "container",
-        items: [
-          { type: "box" },
-          {
-            type: "container",
-            items: [
-              { type: "box", color: "green" },
-              { type: "box", color: "red" }
-            ]
-          }
-        ]
-      }); */
+  item = observable(
+    this.props.item
+      ? this.props.item
+      : new ItemModel({ type: "container", items: [] })
+  );
 
   @observable isHovering = false;
 
@@ -34,20 +23,20 @@ class Container extends React.Component {
   }
 
   render() {
-    const isContainer = this.item.type === "container" && this.item.items;
+    const isContainer = this.item.type === "container";
     return (
       <div className={isContainer ? "container" : ""}>
-        {isContainer ? (
-          this.item.items.map((value, index) => {
-            return <Container item={value} key={index} />;
-          })
-        ) : (
+        {!isContainer ? (
           <button
             className="box"
             style={this.styleColor}
             onClick={this.changeColor}
           />
-        )}
+        ) : this.item.items && this.item.items.length > 0 ? (
+          this.item.items.map((value, index) => {
+            return <Container item={value} key={index} />;
+          })
+        ) : null}
         {isContainer && (
           <div>
             <button
@@ -98,52 +87,7 @@ class Container extends React.Component {
       Math.random()
         .toString(16)
         .slice(2, 8);
-    console.log(this.item.color);
   };
 }
+
 export default Container;
-
-// class Store {
-//     @observable container = {type:'container', items: [], color: null};
-
-//     @action
-// 	addItem (item) {
-// 		this.todos.push(new TodoModel(this, Utils.uuid(), title, false));
-// 	}
-// }
-
-// @observer
-// class Container extends React.Component {
-//     containers = observable([])
-//     render() {
-//         const appState = observable({
-//             boxColor: defaultBoxColor
-//         })
-//         return (
-//             <Box color={appState.boxColor}/>
-//         );
-//     }
-// }
-// export default Container;
-
-// @observer
-// class Box extends React.Component {
-//     @computed get boxColor() {
-//     return this.props.color
-//   }
-//     render() {
-//         return (
-//             <button className="square" style={this.boxColor} onClick={this.changeColor}>
-//                 {this.props.value}
-//             </button>
-//         );
-//     }
-
-//     changeColor = () => {
-//         const p = this.props;
-//         p.color = {
-//             backgroundColor: '#ffff',
-//             borderColor: '#ff9933'
-//         }
-//     }
-// }
