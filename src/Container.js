@@ -1,5 +1,6 @@
 import React from "react";
-import { observable, computed } from "mobx";
+import { ChromePicker } from "react-color";
+import { computed } from "mobx";
 import { observer } from "mobx-react";
 import "./Container.css";
 
@@ -7,7 +8,10 @@ export const defaultBoxColor = "orange";
 
 @observer
 class Container extends React.Component {
-  @observable isHovering = false;
+  state = {
+    displayColorPicker: false,
+    isHovering: false
+  };
 
   @computed get styleColor() {
     return {
@@ -18,6 +22,17 @@ class Container extends React.Component {
   }
 
   render() {
+    const popover = {
+      position: "absolute",
+      zIndex: "2"
+    };
+    const cover = {
+      position: "fixed",
+      top: "0px",
+      right: "0px",
+      bottom: "0px",
+      left: "0px"
+    };
     const isContainer = this.props.item.type === "container";
     return (
       <div className={isContainer ? "container" : ""}>
@@ -26,11 +41,20 @@ class Container extends React.Component {
             <button
               className="box"
               style={this.styleColor}
-              onClick={this.changeColor}
-              onMouseEnter={() => this.setIsHovering(true)}
-              onMouseLeave={() => this.setIsHovering(false)}
+              onClick={this.handleClick}
+              onMouseEnter={() => this.setState({ isHovering: true })}
+              onMouseLeave={() => this.setState({ isHovering: false })}
             />
-            {this.showDeleteBtnOnHover(this.isHovering)}
+            {this.state.displayColorPicker ? (
+              <div style={popover}>
+                <div style={cover} onClick={this.handleClose} />
+                <ChromePicker
+                  color={this.props.item.color}
+                  onChange={this.handleChange}
+                />
+              </div>
+            ) : null}
+            {this.showDeleteBtnOnHover()}
           </div>
         ) : this.props.item.items && this.props.item.items.length > 0 ? (
           this.props.item.items.map((value, index) => {
@@ -47,17 +71,17 @@ class Container extends React.Component {
           <div>
             <button
               className="btn"
-              onMouseEnter={() => this.setIsHovering(true)}
-              onMouseLeave={() => this.setIsHovering(false)}
+              onMouseEnter={() => this.setState({ isHovering: true })}
+              onMouseLeave={() => this.setState({ isHovering: false })}
             >
               Add
             </button>
-            {this.showDeleteBtnOnHover(this.isHovering)}
-            {this.isHovering && (
+            {this.showDeleteBtnOnHover()}
+            {this.state.isHovering && (
               <div
                 className="hover-btn"
-                onMouseEnter={() => this.setIsHovering(true)}
-                onMouseLeave={() => this.setIsHovering(false)}
+                onMouseEnter={() => this.setState({ isHovering: true })}
+                onMouseLeave={() => this.setState({ isHovering: false })}
               >
                 <button className="btn" onClick={this.addBox}>
                   Box
@@ -73,17 +97,29 @@ class Container extends React.Component {
     );
   }
 
-  showDeleteBtnOnHover(isHovering) {
+  handleClick = () => {
+    this.setState({ displayColorPicker: !this.state.displayColorPicker });
+  };
+
+  handleClose = () => {
+    this.setState({ displayColorPicker: false });
+  };
+
+  handleChange = color => {
+    this.props.item.color = color.hex;
+  };
+
+  showDeleteBtnOnHover() {
     return (
-      isHovering && (
+      this.state.isHovering && (
         <div
           className={
             this.props.item.type === "box"
               ? "hover-delete-box"
               : "hover-delete-container"
           }
-          onMouseEnter={() => this.setIsHovering(true)}
-          onMouseLeave={() => this.setIsHovering(false)}
+          onMouseEnter={() => this.setState({ isHovering: true })}
+          onMouseLeave={() => this.setState({ isHovering: false })}
         >
           <button className="delete-btn" onClick={this.removeThisItem}>
             x
@@ -92,10 +128,6 @@ class Container extends React.Component {
       )
     );
   }
-
-  setIsHovering = bool => {
-    this.isHovering = bool;
-  };
 
   addContainer = () => {
     this.props.item.items.push({ type: "container", items: [] });

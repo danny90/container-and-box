@@ -42,6 +42,7 @@
     "postcss-safe-parser": "4.0.1",
     "react": "^16.8.4",
     "react-app-polyfill": "^0.2.2",
+    "react-color": "^2.17.0",
     "react-dev-utils": "^8.0.0",
     "react-dom": "^16.8.4",
     "resolve": "1.10.0",
@@ -115,8 +116,18 @@
   },
   "babel": {
     "plugins": [
-      ["@babel/plugin-proposal-decorators", { "legacy": true}],
-      ["@babel/plugin-proposal-class-properties", { "loose": true}]
+      [
+        "@babel/plugin-proposal-decorators",
+        {
+          "legacy": true
+        }
+      ],
+      [
+        "@babel/plugin-proposal-class-properties",
+        {
+          "loose": true
+        }
+      ]
     ],
     "presets": [
       "react-app"
