@@ -56,32 +56,11 @@ class App extends Component {
     var obj = JSON.parse(
       this.state.value.substr(1, this.state.value.length - 2)
     );
-    this.item.type = obj.type;
-    this.item.color = obj.color;
-    this.item.items = obj.items ? obj.items : [];
+    this.item = new ItemModel(obj);
   };
 
   createJSON = () => {
     this.setState({ jsonStr: '"' + JSON.stringify(this.item) + '"' });
-  };
-
-  addContainer = () => {
-    this.item.items.push({ type: "container", items: [] });
-  };
-
-  addBox = () => {
-    this.item.items.push({
-      type: "box",
-      color: this.defaultBoxColor
-    });
-  };
-
-  changeColor = () => {
-    this.item.color =
-      "#" +
-      Math.random()
-        .toString(16)
-        .slice(2, 8);
   };
 }
 

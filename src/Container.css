@@ -3,16 +3,15 @@
   flex-flow: row wrap;
   align-items: center;
   box-sizing: border-box;
-  padding: 10px;  
   border: 2px solid black;
   margin: 10px;
+  padding: 10px;
 }
 
 .box {
   border: 2px solid;
   float: left;
   margin: 10px;
-  padding: 0;
   width: 70px;
   height: 70px;
 }
@@ -21,4 +20,25 @@
   position: absolute;
   margin-top: -90px;
   margin-left: -70px;
+}
+
+.hover-delete-container {
+  position: absolute;
+  margin-top: -30px;
+  margin-left: 110px;
+}
+
+.hover-delete-box {
+  position: absolute;
+  margin-top: 60px;
+  margin-left: 60px;
+}
+
+.delete-btn {
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  font-weight: normal;
+  text-align: center;
+  outline: none;
 }

@@ -2,39 +2,45 @@ import React from "react";
 import { observable, computed } from "mobx";
 import { observer } from "mobx-react";
 import "./Container.css";
-import ItemModel from "./ItemModel";
 
 export const defaultBoxColor = "orange";
 
 @observer
 class Container extends React.Component {
-  item = observable(
-    this.props.item
-      ? this.props.item
-      : new ItemModel({ type: "container", items: [] })
-  );
-
   @observable isHovering = false;
 
   @computed get styleColor() {
     return {
-      backgroundColor: this.item.color ? this.item.color : defaultBoxColor
+      backgroundColor: this.props.item.color
+        ? this.props.item.color
+        : defaultBoxColor
     };
   }
 
   render() {
-    const isContainer = this.item.type === "container";
+    const isContainer = this.props.item.type === "container";
     return (
       <div className={isContainer ? "container" : ""}>
         {!isContainer ? (
-          <button
-            className="box"
-            style={this.styleColor}
-            onClick={this.changeColor}
-          />
-        ) : this.item.items && this.item.items.length > 0 ? (
-          this.item.items.map((value, index) => {
-            return <Container item={value} key={index} />;
+          <div>
+            <button
+              className="box"
+              style={this.styleColor}
+              onClick={this.changeColor}
+              onMouseEnter={() => this.setIsHovering(true)}
+              onMouseLeave={() => this.setIsHovering(false)}
+            />
+            {this.showDeleteBtnOnHover(this.isHovering)}
+          </div>
+        ) : this.props.item.items && this.props.item.items.length > 0 ? (
+          this.props.item.items.map((value, index) => {
+            return (
+              <Container
+                item={value}
+                key={index}
+                removeItem={this.removeChildItem.bind(this)}
+              />
+            );
           })
         ) : null}
         {isContainer && (
@@ -46,6 +52,7 @@ class Container extends React.Component {
             >
               Add
             </button>
+            {this.showDeleteBtnOnHover(this.isHovering)}
             {this.isHovering && (
               <div
                 className="hover-btn"
@@ -66,23 +73,53 @@ class Container extends React.Component {
     );
   }
 
+  showDeleteBtnOnHover(isHovering) {
+    return (
+      isHovering && (
+        <div
+          className={
+            this.props.item.type === "box"
+              ? "hover-delete-box"
+              : "hover-delete-container"
+          }
+          onMouseEnter={() => this.setIsHovering(true)}
+          onMouseLeave={() => this.setIsHovering(false)}
+        >
+          <button className="delete-btn" onClick={this.removeThisItem}>
+            x
+          </button>
+        </div>
+      )
+    );
+  }
+
   setIsHovering = bool => {
     this.isHovering = bool;
   };
 
   addContainer = () => {
-    this.item.items.push({ type: "container", items: [] });
+    this.props.item.items.push({ type: "container", items: [] });
   };
 
   addBox = () => {
-    this.item.items.push({
+    this.props.item.items.push({
       type: "box",
       color: defaultBoxColor
     });
   };
 
+  removeThisItem = () => {
+    if (this.props.removeItem) this.props.removeItem(this.props.item);
+  };
+
+  removeChildItem = item => {
+    if (this.props.item.items) {
+      this.props.item.items.remove(item);
+    }
+  };
+
   changeColor = () => {
-    this.item.color =
+    this.props.item.color =
       "#" +
       Math.random()
         .toString(16)
