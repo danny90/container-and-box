@@ -150,6 +150,7 @@ class Container extends React.Component {
     }
   };
 
+  // this function assigns random color to the box
   changeColor = () => {
     this.props.item.color =
       "#" +
