@@ -2,6 +2,7 @@ import React from "react";
 import { ChromePicker } from "react-color";
 import { computed } from "mobx";
 import { observer } from "mobx-react";
+import ItemModel from "./ItemModel";
 import "./Container.css";
 
 export const defaultBoxColor = "orange";
@@ -35,11 +36,11 @@ class Container extends React.Component {
     };
     const isContainer = this.props.item.type === "container";
     return (
-      <div className={isContainer ? "container" : ""}>
+      <div className={isContainer ? "container-item" : ""}>
         {!isContainer ? (
           <div>
             <button
-              className="box"
+              className="box-item"
               style={this.styleColor}
               onClick={this.handleClick}
               onMouseEnter={() => this.setState({ isHovering: true })}
@@ -70,7 +71,7 @@ class Container extends React.Component {
         {isContainer && (
           <div>
             <button
-              className="btn"
+              className="btn-normal"
               onMouseEnter={() => this.setState({ isHovering: true })}
               onMouseLeave={() => this.setState({ isHovering: false })}
             >
@@ -79,14 +80,14 @@ class Container extends React.Component {
             {this.showDeleteBtnOnHover()}
             {this.state.isHovering && (
               <div
-                className="hover-btn"
+                className="hover-show-options"
                 onMouseEnter={() => this.setState({ isHovering: true })}
                 onMouseLeave={() => this.setState({ isHovering: false })}
               >
-                <button className="btn" onClick={this.addBox}>
+                <button className="btn-normal" onClick={this.addBox}>
                   Box
                 </button>
-                <button className="btn" onClick={this.addContainer}>
+                <button className="btn-normal" onClick={this.addContainer}>
                   Container
                 </button>
               </div>
@@ -121,7 +122,7 @@ class Container extends React.Component {
           onMouseEnter={() => this.setState({ isHovering: true })}
           onMouseLeave={() => this.setState({ isHovering: false })}
         >
-          <button className="delete-btn" onClick={this.removeThisItem}>
+          <button className="btn-delete" onClick={this.removeThisItem}>
             x
           </button>
         </div>
@@ -130,14 +131,11 @@ class Container extends React.Component {
   }
 
   addContainer = () => {
-    this.props.item.items.push({ type: "container", items: [] });
+    this.props.item.items.push(new ItemModel({ type: "container" }));
   };
 
   addBox = () => {
-    this.props.item.items.push({
-      type: "box",
-      color: defaultBoxColor
-    });
+    this.props.item.items.push(new ItemModel({ type: "box" }));
   };
 
   removeThisItem = () => {
@@ -152,11 +150,9 @@ class Container extends React.Component {
 
   // this function assigns random color to the box
   changeColor = () => {
-    this.props.item.color =
-      "#" +
-      Math.random()
-        .toString(16)
-        .slice(2, 8);
+    this.props.item.color = `#${Math.random()
+      .toString(16)
+      .slice(2, 8)}`;
   };
 }
 

@@ -28,12 +28,12 @@ class App extends Component {
             cols="80"
             onChange={this.handleChange}
           />
-          <button className="btn" onClick={this.buildFromString}>
+          <button className="btn-normal" onClick={this.buildFromString}>
             Build
           </button>
         </div>
         <div className="form-inline">
-          <button className="btn" onClick={this.createJSON}>
+          <button className="btn-normal" onClick={this.createJSON}>
             Create JSON
           </button>
           <textarea
@@ -53,14 +53,18 @@ class App extends Component {
   }
 
   buildFromString = () => {
-    var obj = JSON.parse(
-      this.state.value.substr(1, this.state.value.length - 2)
-    );
-    this.item = new ItemModel(obj);
+    try {
+      var obj = JSON.parse(
+        this.state.value.substr(1, this.state.value.length - 2)
+      );
+      this.item = new ItemModel(obj);
+    } catch (e) {
+      alert("Invalid JSON format! Please check your input.");
+    }
   };
 
   createJSON = () => {
-    this.setState({ jsonStr: '"' + JSON.stringify(this.item) + '"' });
+    this.setState({ jsonStr: `"${JSON.stringify(this.item)}"` });
   };
 }
 

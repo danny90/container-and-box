@@ -8,7 +8,15 @@ export default class ItemModel {
 
   constructor(obj) {
     this.type = obj.type ? obj.type : "container";
-    this.color = obj.color ? obj.color : this.color === "box" ? defaultBoxColor : undefined;
-    this.items = obj.items ? obj.items : this.type === "container" ? observable([]) : undefined;
+    this.color = obj.color
+      ? obj.color
+      : this.type === "box"
+      ? defaultBoxColor
+      : undefined;
+    this.items = obj.items
+      ? obj.items
+      : this.type === "container"
+      ? []
+      : undefined;
   }
 }
